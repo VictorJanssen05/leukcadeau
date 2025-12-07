@@ -1,0 +1,420 @@
+/* ----------------------------------- */
+/* 1. GLOBALE EN BASIS STIJLEN */
+/* ----------------------------------- */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9; 
+    color: #333;
+}
+
+h1, h2, h3 {
+    color: #1d3557; 
+}
+
+/* ----------------------------------- */
+/* 2. HEADER & NAVIGATIE */
+/* ----------------------------------- */
+header {
+    background-color: #1d3557; 
+    color: white;
+    padding: 15px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo h1 {
+    color: white; 
+    font-size: 1.8em;
+    font-weight: 500;
+}
+/* FIX: Logo link stijl */
+.logo a {
+    color: white;
+    text-decoration: none; 
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+nav li {
+    margin-left: 30px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 5px 0;
+    transition: all 0.3s;
+}
+
+nav a:hover,
+nav a.active {
+    border-bottom: 2px solid white;
+}
+
+/* ----------------------------------- */
+/* 3. HERO SECTIE */
+/* ----------------------------------- */
+.hero-section {
+    position: relative; 
+    height: 300px; 
+    padding: 0; 
+    overflow: hidden;
+    color: white; 
+    text-align: center;
+}
+
+#hero-image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center 35%; 
+    background-blend-mode: multiply;
+    background-color: rgba(168, 218, 220, 0.9); 
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative; 
+    z-index: 2;
+    padding: 80px 20px; 
+}
+
+.hero-content h2 {
+    color: #1d3557 !important; 
+    font-size: 2.8em;
+    text-shadow: 1px 1px 4px rgba(255, 255, 255, 0.8);
+}
+
+/* ----------------------------------- */
+/* 4. BREADCRUMBS */
+/* ----------------------------------- */
+.breadcrumb-container {
+    max-width: 1200px;
+    margin: 10px auto 0 auto;
+    padding: 0 20px;
+    font-size: 0.9em;
+}
+
+.breadcrumb-inner a {
+    color: #457b9d; 
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.breadcrumb-inner a:hover {
+    color: #0d3b66; 
+}
+
+.breadcrumb-inner span {
+    margin: 0 5px;
+    color: #ccc; 
+}
+
+.breadcrumb-inner .current-page {
+    font-weight: bold;
+    color: #333; 
+}
+
+
+/* ----------------------------------- */
+/* 5. HOOFD LAY-OUT & SIDEBAR ACCORDION */
+/* ----------------------------------- */
+.main-content-wrapper {
+    display: flex;
+    max-width: 1200px;
+    margin: 20px auto 50px auto;
+    padding: 0 20px;
+    gap: 20px; 
+}
+
+/* Fix voor Centreren op de Homepage */
+.product-area-full-width h2 {
+    max-width: 1200px;
+    margin: 30px auto 15px;
+    padding: 0 20px; 
+}
+.product-area-full-width .product-grid-container {
+    max-width: 1200px; 
+    margin: 0 auto 50px;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+    gap: 20px;
+}
+
+
+.product-area {
+    /* Zorgt ervoor dat de footer knop er onder past */
+    flex: 1;
+    display: flex;
+    flex-direction: column; 
+}
+
+.sidebar {
+    flex: 0 0 280px; 
+    background-color: white;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    align-self: flex-start; 
+}
+
+.sidebar h2 {
+    margin-top: 0;
+    font-size: 1.5em;
+    border-bottom: 2px solid #f4f4f9;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.filter-list {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0 25px 0;
+}
+
+.main-cat-item {
+    margin-bottom: 5px;
+}
+
+.main-cat-link {
+    display: block;
+    padding: 8px 10px;
+    background-color: #f0f0f5; 
+    color: #1d3557 !important;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    transition: background-color 0.2s;
+}
+
+.main-cat-item.main-active > .main-cat-link {
+    background-color: #a8dadc; 
+    color: #1d3557 !important;
+}
+
+.main-cat-link:after {
+    content: ' ►'; 
+    float: right;
+    font-weight: normal;
+    font-size: 0.8em;
+    line-height: 1.5;
+}
+
+.main-cat-item.main-active > .main-cat-link:after {
+    content: ' ▼'; 
+}
+
+
+/* Subcategorieën */
+.sub-filter-list {
+    list-style: none;
+    padding-left: 10px; 
+    margin: 5px 0 10px 0;
+}
+
+.sub-cat-link {
+    display: block;
+    padding: 4px 10px;
+    color: #457b9d !important;
+    text-decoration: none;
+    font-size: 0.9em;
+}
+
+.sub-cat-link:hover {
+    background-color: #f4f4f9;
+}
+
+.sub-cat-link.active-filter {
+    font-weight: bold;
+    color: #e63946 !important; 
+    border-left: 3px solid #e63946;
+    padding-left: 7px;
+}
+
+/* 6. PRODUCTEN GRID EN KAARTEN */
+
+.product-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+    gap: 20px;
+}
+
+.product-card {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 0; 
+    text-align: left; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    overflow: hidden; 
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative; 
+    /* CRUCIAAL: Ruimte creëren onder de content voor de knop */
+    padding-bottom: 60px; 
+}
+
+.product-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* FIX VOOR VIERKANTE AFBEELDINGEN */
+.product-image-wrapper {
+    width: 100%;
+    height: 0;
+    padding-bottom: 100%; 
+    position: relative; 
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+}
+
+.product-card img {
+    position: absolute; 
+    top: 0;
+    left: 0;
+    width: 100%; 
+    height: 100%; 
+    object-fit: contain; 
+}
+
+.product-info {
+    position: static;
+    width: 100%;
+    padding: 0 15px 15px 15px; 
+    box-sizing: border-box; 
+}
+
+.product-card h3 {
+    font-size: 1.2em;
+    margin: 5px 0;
+}
+
+.product-card .price {
+    font-size: 1.1em;
+    color: #457b9d; 
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.product-card .short-desc {
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 5px; 
+    /* FIX: Geen max-height voor betere tekstflow */
+    max-height: none; 
+    overflow: hidden;
+}
+
+/* KNOP STIJL EN POSITIE FIX (nu linksonder vastgezet) */
+.product-card .detail-link {
+    position: absolute;
+    bottom: 15px; 
+    left: 15px; 
+    
+    background-color: #a8dadc; 
+    color: #1d3557;
+    padding: 8px 12px;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+    z-index: 10;
+}
+
+.product-card .detail-link:hover {
+    background-color: #8bb3b6;
+}
+
+/* RODE CTA KNOP STIJLEN */
+.cta-button {
+    display: inline-block;
+    background-color: #e63946; 
+    color: white;
+    padding: 10px 25px;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    border: none; 
+    cursor: pointer;
+}
+
+.filter-button.active-filter {
+    background-color: #c02d3a; 
+}
+
+
+/* ----------------------------------- */
+/* 7. FOOTER & RESPONSIVE */
+/* ----------------------------------- */
+footer {
+    background-color: #1d3557;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    font-size: 0.9em;
+}
+
+.footer-links a {
+    color: #a8dadc;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+/* ZOEKEN VERDER KNOP CONTAINER (moet de breedte van de sectie nemen) */
+.search-further-container {
+    text-align: center; 
+    padding: 40px 0; 
+    border-top: 1px solid #ddd; 
+    margin-top: 20px;
+}
+
+
+@media (max-width: 900px) {
+    .product-grid-container {
+        grid-template-columns: repeat(2, 1fr); 
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content-wrapper {
+        flex-direction: column; 
+    }
+    
+    .sidebar {
+        flex: auto; 
+        margin-bottom: 20px;
+        order: -1; 
+    }
+
+    .product-grid-container {
+        grid-template-columns: 1fr; 
+    }
+    
+    header {
+        flex-direction: column;
+        padding: 15px 20px;
+    }
+    nav ul {
+        margin-top: 10px;
+        flex-wrap: wrap; 
+        justify-content: center;
+    }
+    nav li {
+        margin: 5px 10px;
+    }
+}

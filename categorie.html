@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categorie Overzicht - Jouw Affiliate Shop</title>
+    <link rel="stylesheet" href="style.css"> 
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <a href="index.html">
+                <h1>Leuke Cadeaus</h1>
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html" data-nav-id="cadeaus">🎁 Cadeaus</a></li>
+                <li><a href="categorie.html?hoofdcat=entertainment" data-nav-id="entertainment">🎮 Entertainment</a></li>
+                <li><a href="categorie.html?hoofdcat=huistechniek" data-nav-id="huistechniek">🔧 Huis & Techniek</a></li>
+                <li><a href="categorie.html?hoofdcat=leefstijl" data-nav-id="leefstijl">💪 Leefstijl</a></li>
+                <li><a href="categorie.html?hoofdcat=humor" data-nav-id="humor">😂 Fun & Humor</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero-section hero-small" id="dynamic-hero">
+        <div class="hero-content">
+            <h2>Categorie Overzicht</h2>
+            <p id="hero-tekst">Laden van categorie...</p>
+        </div>
+        <div id="hero-image-overlay"></div>
+    </section>
+
+    <div class="breadcrumb-container">
+        <div class="breadcrumb-inner" id="breadcrumb-links">
+            </div>
+    </div>
+
+    <div class="main-content-wrapper">
+        
+        <aside class="sidebar filter-menu">
+            <h2>Filter op Subcategorie</h2>
+            
+            <ul class="filter-list" id="dynamic-filters">
+                <p>Filters worden geladen...</p>
+            </ul>
+            
+            <div class="filter-box">
+                <h4>Prijs Filter</h4>
+                <input type="range" min="10" max="500" value="500" class="slider" id="priceRange">
+                <p>Max. prijs: <span id="priceValue">€ 500</span></p>
+                <button class="cta-button filter-button">Filter Toepassen</button>
+            </div>
+            
+        </aside>
+
+        <section id="producten-categorie" class="product-area">
+            <h2 id="result-title">Selecteer een Categorie</h2>
+            <div class="product-grid-container">
+                <p>Laden van producten...</p>
+            </div>
+            
+            <div class="search-further-container" id="category-search-further" style="display: none;">
+                <p>Niet gevonden wat je zoekt?</p>
+                <a id="amazon-cta-link-cat" href="#" target="_blank" class="cta-button">
+                    Kijk verder op Amazon.nl
+                </a>
+            </div>
+
+        </section>
+        
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Leuke Cadeaus. Alle prijzen en beschikbaarheid zijn onder voorbehoud van onze partners.</p>
+        <div class="footer-links">
+            <a href="#">Disclaimer</a> |
+            <a href="#">Privacy Beleid</a>
+        </div>
+    </footer>
+
+    <script>
+        
+        const FLASK_API_BASE_URL = 'http://127.0.0.1:5000'; 
+        const MY_AFFILIATE_TAG = 'leukecadeaus2-21'; 
+        let loadedProducts = []; 
+        
+        // --- MAP: Definieer hier alle mogelijke subcategorieën en hun weergavenaam ---
+        // --- MAP: Definieer hier alle mogelijke subcategorieën en hun weergavenaam ---
+        const FILTER_MAP = {
+            'cadeaus': {
+                title: '🎁 Uitgelichte Cadeaus',
+                amazonSearch: 'cadeaus',
+                filters: {
+                    'populair': '🌟 Meest Populair',
+                    'budget': '💰 Cadeaus onder €20',
+                }
+            },
+            'entertainment': {
+                title: 'Entertainment & Gadgets',
+                amazonSearch: 'gadgets+spelletjes',
+                filters: {
+                    'gadgets': '💡 Gadgets',
+                    'boek': '📖 Boeken', // <--- NIEUW: Sleutel 'beleving'
+                    'speelgoed': '🧱 LEGO & Speelgoed', 
+                    'spellen': '🎲 Bord- & Kaartspellen' 
+                }
+            },
+            'huistechniek': {
+                title: 'Huis & Techniek',
+                amazonSearch: 'smarthome+gereedschap',
+                filters: {
+                    'gereedschap': '🛠️ Klussen & Gereedschap',
+                    'smarthome': '🏠 Smarthome & Wonen',
+                    'keuken': '🔪 Keuken & Koken',
+                    'bbq': '🥩 BBQ & Grill'
+                }
+            },
+            'leefstijl': {
+                title: 'Leefstijl & Wellness',
+                amazonSearch: 'fitness+beauty',
+                filters: {
+                    'sport': '🏃 Sport & Fitness',
+                    'beauty': '💅 Beauty & Verzorging',
+                    'outdoor': '🏕️ Outdoor & Reizen',
+                    'mode': '👚 Mode'
+                }
+            },
+            'humor': {
+                title: '😂 Fun & Humor',
+                amazonSearch: 'grappige+cadeaus',
+                filters: {
+                    'pranks': '😂 Grappen & Pranks',
+                    'drankspellen': '🍺 Drankspellen & Gadgets',
+                    'accessoires': '🎁 Kleding & Acc.'
+                }
+            }
+        };
+// ... rest van je categorie.html
+        
+        // --- FUNCTIE OM AMAZON CTA BIJ TE WERKEN ---
+        function updateAmazonCTA(hoofdCatKey, subCatKey) {
+            const container = document.getElementById('category-search-further');
+            const link = document.getElementById('amazon-cta-link-cat');
+            const hoofdCatData = FILTER_MAP[hoofdCatKey];
+            
+            // Gebruik de subcategorie als zoekterm, anders de hoofdcategorie's algemene zoekterm
+            let searchTerm = subCatKey === 'alles' 
+                             ? hoofdCatData.amazonSearch 
+                             : hoofdCatData.filters[subCatKey] ? hoofdCatData.filters[subCatKey].split(' ')[1] : subCatKey; // Simpelste manier om de kern-zoekterm te pakken
+                             
+            searchTerm = encodeURIComponent(searchTerm.replace(/[^a-zA-Z0-9\s]/g, '').trim()); // Schoonmaken voor URL
+
+            link.href = `https://www.amazon.nl/s?k=${searchTerm}&tag=${MY_AFFILIATE_TAG}`;
+            container.style.display = 'block';
+        }
+
+
+        // --- FUNCTIE: BREADCRUMBS MAKEN EN UPDATEN ---
+        function updateBreadcrumbs(hoofdCatKey, subCatKey) {
+            const container = document.getElementById('breadcrumb-links');
+            const hoofdCatTitle = FILTER_MAP[hoofdCatKey].title;
+            
+            let html = '';
+            
+            html += `<a href="index.html">Home</a>`;
+            html += `<span>/</span><a href="categorie.html?hoofdcat=${hoofdCatKey}">${hoofdCatTitle}</a>`;
+
+            if (subCatKey !== 'alles') {
+                const subCatTitle = FILTER_MAP[hoofdCatKey].filters[subCatKey] || subCatKey;
+                html += `<span>/</span><span class="current-page">${subCatTitle}</span>`;
+            }
+
+            container.innerHTML = html;
+        }
+
+        // --- FUNCTIE OM PRODUCTEN IN HET RASTER TE WEERGEVEN ---
+        function renderProducts(products) {
+            const productGrid = document.querySelector('.product-grid-container');
+            productGrid.innerHTML = ''; 
+
+            if (products.length === 0) {
+                productGrid.innerHTML = '<p>Geen producten gevonden met deze filters.</p>';
+                // LET OP: CTA wordt getoond in laadProducten
+                return;
+            }
+
+            products.forEach(product => {
+                const cardHTML = `
+                    <div class="product-card" data-price="${product.prijs_num}">
+                        <a href="${product.affiliate_link}" target="_blank">
+                            <div class="product-image-wrapper">
+                                <img src="${product.afbeelding_url}" alt="${product.titel}">
+                            </div>
+                        </a>
+                        <div class="product-info">
+                            <h3>${product.titel}</h3>
+                            <p class="price">${product.prijs}</p>
+                            <p class="short-desc">${product.beschrijving}</p>
+                        </div>
+                        <a href="${product.affiliate_link}" target="_blank" class="detail-link">Bekijken</a>
+                    </div>
+                `;
+                productGrid.innerHTML += cardHTML;
+            });
+        }
+        
+        // --- FUNCTIE VOOR DYNAMISCHE PRIJSFILTERING ---
+        function applyPriceFilter() {
+            const maxPriceFilter = parseFloat(document.getElementById('priceRange').value);
+            
+            let filtered = loadedProducts;
+
+            // Filteren op de schuifbalkwaarde
+            filtered = filtered.filter(product => {
+                return product.prijs_num <= maxPriceFilter;
+            });
+
+            // Wis actieve status op de zijbalk filters en activeer de filterknop visueel
+            document.querySelectorAll('.sub-cat-link').forEach(link => link.classList.remove('active-filter'));
+            document.querySelector('.filter-button').classList.add('active-filter');
+            
+            renderProducts(filtered);
+            // Update CTA om te laten zien dat de filtering klaar is
+            document.getElementById('category-search-further').style.display = 'block';
+        }
+
+        // --- FUNCTIE OM PRODUCTEN OP TE HALEN VAN JOUW PYTHON SERVER ---
+        function laadProducten(categorie) {
+            const productArea = document.querySelector('.product-area');
+            productArea.querySelector('h2').textContent = `Laden van producten voor "${categorie}"...`;
+            document.querySelector('.product-grid-container').innerHTML = '<p>Bezig met laden...</p>'; 
+            document.getElementById('category-search-further').style.display = 'none'; // Verberg CTA tijdens laden
+            
+            const [hoofdCatKey, subCatKey] = categorie.split('-');
+            
+            fetch(`${FLASK_API_BASE_URL}/api/producten?cat=${categorie}`) 
+                .then(response => response.json())
+                .then(data => {
+                    loadedProducts = data; // Opslaan voor filtering
+                    
+                    // Titel logica
+                    let displayTitle = '';
+                    if (subCatKey === 'alles') {
+                        displayTitle = FILTER_MAP[hoofdCatKey] ? FILTER_MAP[hoofdCatKey].title : 'Alle Producten';
+                    } else {
+                        // LET OP: Hier gebruiken we de nieuwe key 'spellen'
+                        displayTitle = FILTER_MAP[hoofdCatKey].filters[subCatKey] || subCatKey.charAt(0).toUpperCase() + subCatKey.slice(1);
+                        
+                        // Budget knop fix: Als er op Budget wordt geklikt, filter direct op <= 20
+                        if (subCatKey === 'budget') {
+                           loadedProducts = loadedProducts.filter(p => p.prijs_num <= 20.00);
+                        }
+                    }
+
+                    productArea.querySelector('h2').textContent = `Resultaten: ${displayTitle}`;
+                    
+                    // Prijsbereik berekenen en instellen
+                    const maxPrice = loadedProducts.reduce((max, p) => {
+                        return p.prijs_num > max ? p.prijs_num : max;
+                    }, 0);
+                    
+                    const priceSlider = document.getElementById('priceRange');
+                    const priceValueSpan = document.getElementById('priceValue');
+
+                    priceSlider.max = Math.ceil(maxPrice) > 0 ? Math.ceil(maxPrice) : 500;
+                    priceSlider.value = Math.ceil(maxPrice) > 0 ? Math.ceil(maxPrice) : 500;
+                    priceValueSpan.textContent = `€ ${priceSlider.value}`;
+
+                    // Renderen van de producten
+                    renderProducts(loadedProducts);
+                    updateBreadcrumbs(hoofdCatKey, subCatKey);
+                    updateAmazonCTA(hoofdCatKey, subCatKey); // Toon de CTA na het laden!
+                    
+                })
+                .catch(error => {
+                    console.error('Fout bij het laden van producten:', error);
+                    productArea.querySelector('h2').textContent = `Fout bij het laden`;
+                    document.querySelector('.product-grid-container').innerHTML = '<p>Er is een probleem met de verbinding naar de Python/Flask server. Zorg dat app.py draait!</p>';
+                    document.getElementById('category-search-further').style.display = 'block'; // Toon CTA ook bij fout
+                });
+        }
+
+
+        // --- FUNCTIE OM FILTERLINKS DYNAMISCH TE MAKEN (INCL. ACCORDION STYLE) ---
+        function createFilterListeners(hoofdCat) {
+            const filterContainer = document.getElementById('dynamic-filters');
+            let filterHTML = '';
+            
+            // Bouw de volledige sidebar met ALLE hoofdcategorieën
+            for (const mainKey in FILTER_MAP) {
+                const mainCat = FILTER_MAP[mainKey];
+                const isCurrent = mainKey === hoofdCat;
+                const currentActive = isCurrent ? 'main-active' : '';
+
+                // Hoofdcategorie Link (die opent/sluit)
+                filterHTML += `<li class="main-cat-item ${currentActive}">
+                                    <a href="categorie.html?hoofdcat=${mainKey}" class="main-cat-link">${mainCat.title}</a>`;
+                
+                // Subcategorieën (Alleen zichtbaar voor de huidige categorie)
+                if (isCurrent) {
+                    filterHTML += `<ul class="sub-filter-list">`;
+                    
+                    // 1. Link om alles te tonen in deze categorie
+                    filterHTML += `<li><a href="#" data-filter="${mainKey}-alles" class="sub-cat-link">Alle ${mainCat.title}</a></li>`;
+
+                    // 2. De echte subfilters
+                    for (const [subKey, subValue] of Object.entries(mainCat.filters)) {
+                        filterHTML += `<li><a href="#" data-filter="${mainKey}-${subKey}" class="sub-cat-link">${subValue}</a></li>`;
+                    }
+                    filterHTML += `</ul>`;
+                }
+                
+                filterHTML += `</li>`;
+            }
+
+            filterContainer.innerHTML = filterHTML;
+
+            // Voeg de event listeners toe aan de NIEUW gemaakte subcategorie links
+            document.querySelectorAll('.sub-filter-list a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault(); 
+                    const filterValue = this.getAttribute('data-filter');
+
+                    // Activeer de juiste link & deactiveer de Prijsfilter knop
+                    document.querySelectorAll('.sub-filter-list a').forEach(l => l.classList.remove('active-filter'));
+                    this.classList.add('active-filter');
+                    document.querySelector('.filter-button').classList.remove('active-filter');
+
+                    laadProducten(filterValue);
+                });
+            });
+            
+            // Event listener voor de Prijs Filter Knop
+            document.querySelector('.filter-button').addEventListener('click', applyPriceFilter);
+            
+            // Event listener voor de Prijs Slider Weergave
+            document.getElementById('priceRange').addEventListener('input', function() {
+                document.getElementById('priceValue').textContent = `€ ${this.value}`;
+            });
+        }
+
+
+        // --- INITIEEL LADEN VANAF URL ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const params = new URLSearchParams(window.location.search);
+            const hoofdCat = params.get('hoofdcat') || 'cadeaus'; 
+
+            if (FILTER_MAP[hoofdCat]) {
+                const catData = FILTER_MAP[hoofdCat];
+
+                // 1. Pas de NAVIGATIE aan (active class)
+                const navLink = document.querySelector(`a[data-nav-id="${hoofdCat}"]`);
+                if(navLink) navLink.classList.add('active');
+
+                // 2. Update Hero content
+                document.title = catData.title;
+                document.querySelector('.hero-content h2').textContent = catData.title;
+                document.getElementById('hero-tekst').textContent = `Hier vind je alle deals binnen de ${catData.title} categorie.`;
+                
+                // 3. Maak de DYNAMISCHE FILTERS
+                createFilterListeners(hoofdCat);
+                
+                // 4. FIX: Zorg ervoor dat de 'Alle [Hoofdcategorie]' link in de sidebar de actieve status krijgt bij initieel laden
+                const allLink = document.querySelector(`.sub-filter-list a[data-filter="${hoofdCat}-alles"]`);
+                if(allLink) {
+                    // Eerst alle andere actieve filters deactiveren (voor de zekerheid)
+                    document.querySelectorAll('.sub-filter-list a').forEach(l => l.classList.remove('active-filter'));
+                    // Dan de 'alles' link actief maken
+                    allLink.classList.add('active-filter');
+                }
+
+                // 5. Laad de data (standaard 'alles' van die hoofdcategorie)
+                laadProducten(`${hoofdCat}-alles`);
+            } else {
+                document.querySelector('.hero-content h2').textContent = 'Fout: Categorie niet gevonden';
+                document.getElementById('category-search-further').style.display = 'block'; // Toon CTA ook bij fout
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leuke Cadeaus - De Beste Deals</title>
+    <link rel="stylesheet" href="style.css"> 
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <a href="index.html">
+                <h1>Leuke Cadeaus</h1>
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html" class="active" data-nav-id="cadeaus">🎁 Cadeaus</a></li> 
+                <li><a href="categorie.html?hoofdcat=entertainment" data-nav-id="entertainment">🎮 Entertainment</a></li>
+                <li><a href="categorie.html?hoofdcat=huistechniek" data-nav-id="huistechniek">🔧 Huis & Techniek</a></li>
+                <li><a href="categorie.html?hoofdcat=leefstijl" data-nav-id="leefstijl">💪 Leefstijl</a></li>
+                <li><a href="categorie.html?hoofdcat=humor" data-nav-id="humor">😂 Fun & Humor</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero-section">
+        <div class="hero-content">
+            <h2>Welkom bij de Beste Deals!</h2>
+            <p>Ontdek onze populairste, geselecteerde producten. Vandaag in de kijker!</p>
+            <a href="#producten" class="cta-button">Bekijk Alle Deals</a>
+        </div>
+    </section>
+
+    <section id="producten" class="product-area-full-width">
+        <h2 style="max-width: 1200px; margin: 30px auto 15px; padding: 0 20px;">🔥 Alle Deals</h2>
+        <div class="product-grid-container" id="homepage-grid">
+            <p style="text-align: center; width: 100%;">Laden van alle producten...</p>
+        </div>
+        
+        <div class="search-further-container" id="homepage-search-further" style="display: none;">
+            <p>Niet gevonden wat je zoekt?</p>
+            <a id="amazon-cta-link-home" href="https://www.amazon.nl/s?k=cadeaus&tag=leukecadeaus2-21" target="_blank" class="cta-button">
+                Kijk verder op Amazon.nl
+            </a>
+        </div>
+        
+    </section>
+    
+    <footer>
+        <p>&copy; 2025 Leuke Cadeaus. Alle prijzen en beschikbaarheid zijn onder voorbehoud van onze partners.</p>
+        <div class="footer-links">
+            <a href="#">Disclaimer</a> |
+            <a href="#">Privacy Beleid</a>
+        </div>
+    </footer>
+
+    <script>
+        const FLASK_API_BASE_URL = 'http://127.0.0.1:5000'; 
+        const MY_AFFILIATE_TAG = 'leukecadeaus2-21'; // Zet hier je daadwerkelijke ID
+        
+        // Functie voor rendering (gekopieerd uit categorie.html)
+        function renderProducts(products) {
+            const productGrid = document.getElementById('homepage-grid');
+            const searchFurtherContainer = document.getElementById('homepage-search-further');
+            productGrid.innerHTML = ''; 
+
+            if (products.length === 0) {
+                productGrid.innerHTML = '<p style="text-align: center; width: 100%;">Geen producten gevonden in de database.</p>';
+            }
+
+            products.forEach(product => {
+                const cardHTML = `
+                    <div class="product-card" data-price="${product.prijs_num}">
+                        <a href="${product.affiliate_link}" target="_blank">
+                            <div class="product-image-wrapper">
+                                <img src="${product.afbeelding_url}" alt="${product.titel}">
+                            </div>
+                        </a>
+                        <div class="product-info">
+                            <h3>${product.titel}</h3>
+                            <p class="price">${product.prijs}</p>
+                            <p class="short-desc">${product.beschrijving}</p>
+                        </div>
+                        <a href="${product.affiliate_link}" target="_blank" class="detail-link">Bekijken</a>
+                    </div>
+                `;
+                productGrid.innerHTML += cardHTML;
+            });
+            
+            // Toon de Amazon CTA zodra de producten geladen zijn
+            searchFurtherContainer.style.display = 'block';
+        }
+
+        // Functie om ALLE producten via de API op te halen
+        function laadAlleProducten() {
+            // Roep de speciale API route aan die alle JSONs combineert
+            fetch(`${FLASK_API_BASE_URL}/api/producten/alles`) 
+                .then(response => response.json())
+                .then(data => {
+                    // Voer prijsconversie lokaal uit voor rendering
+                    const cleanedData = data.map(p => {
+                        try {
+                            p.prijs_num = parseFloat(p.prijs.replace('€', '').replace(',', '.').trim());
+                        } catch (e) {
+                            p.prijs_num = 9999;
+                        }
+                        return p;
+                    });
+                    renderProducts(cleanedData);
+                })
+                .catch(error => {
+                    console.error('Fout bij het laden van alle producten:', error);
+                    document.getElementById('homepage-grid').innerHTML = '<p style="text-align: center; width: 100%;">Fout: Kan geen verbinding maken met de server. Zorg dat app.py draait!</p>';
+                    // Toon de CTA ook bij een fout, zodat de gebruiker nog ergens heen kan
+                    document.getElementById('homepage-search-further').style.display = 'block'; 
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Laad ALLE producten zodra de homepage klaar is
+            laadAlleProducten();
+            
+            // Update de Amazon link op de homepage met de standaard zoekterm 'cadeaus'
+            const amazonLink = document.getElementById('amazon-cta-link-home');
+            amazonLink.href = `https://www.amazon.nl/s?k=cadeaus&tag=${MY_AFFILIATE_TAG}`;
+        });
+    </script>
+    
+    <style>
+        /* CSS voor de homepage om de hero sectie op te schonen */
+        .hero-section {
+            background-color: #a8dadc;
+            color: #1d3557; 
+            text-align: center;
+            padding: 80px 20px;
+            /* Zorgt dat de statische hero-sectie eruitziet als de dynamische */
+            height: 300px;
+            position: relative;
+        }
+        .hero-section h2 {
+            color: #1d3557 !important;
+            font-size: 2.5em;
+        }
+    </style>
+
+</body>
+</html>
