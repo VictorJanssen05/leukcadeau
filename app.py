@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, send_from_directory # send_from_directory is NIEUW!
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 import json 
 import os 
@@ -9,7 +9,6 @@ SERVER_PORT = 5000
 MY_ASSOCIATE_ID = "leukecadeaus2-21" 
 
 app = Flask(__name__)
-# CORS is essentieel om communicatie tussen frontend (op file:// of localhost) en de Flask server mogelijk te maken
 CORS(app) 
 
 # Hoofdcategorieën die naar een eigen JSON-bestand verwijzen
@@ -17,18 +16,16 @@ HOOFDCATEGORIEEN = ['cadeaus', 'entertainment', 'huistechniek', 'leefstijl', 'hu
 
 # ===============================================
 # --- FIX: SERVEER HTML/CSS/JS BESTANDEN ---
-# Deze routes zorgen ervoor dat de browser de index.html en de andere files kan zien
 # ===============================================
 
 @app.route('/')
 def index():
-    # Serveert de hoofdpagina (index.html) wanneer iemand naar de root-URL (leukcadeau.com) gaat
+    # Serveert de hoofdpagina (index.html)
     return send_from_directory('.', 'index.html')
 
 @app.route('/<path:filename>')
 def serve_files(filename):
-    # Serveert alle andere bestanden zoals categorie.html, style.css, de JavaScript-bestanden, etc.
-    # Dit is nodig omdat je applicatie niet alleen een API is, maar ook HTML moet tonen.
+    # Serveert alle andere bestanden zoals categorie.html, style.css, etc.
     return send_from_directory('.', filename)
 
 # ===============================================
@@ -40,14 +37,11 @@ def serve_files(filename):
 def laad_product_data(hoofd_categorie):
     # Probeer zowel 'cadeaus' als 'cadeaus_alle' te laden als we op de cadeaus-pagina staan
     if hoofd_categorie == 'cadeaus':
-        # De cadeaus-pagina is een speciale categorie, maar laadt voor nu net als de andere
         filepath = os.path.join('data', 'cadeaus.json')
     else:
         filepath = os.path.join('data', f'{hoofd_categorie}.json')
 
     if not os.path.exists(filepath):
-        # Controleer voor de zekerheid ook het meervoud (bijv. huistechnieken.json)
-        # of een eventuele typo. Nu houden we ons aan de enkelvoudige naam.
         print(f"Waarschuwing: Bestand niet gevonden op {filepath}")
         return []
         
@@ -64,9 +58,7 @@ def laad_product_data(hoofd_categorie):
         return []
 
 
-# --- FUNCTIE: PRODUCTEN ZOEKEN EN FILTEREN ---
-# De logica in deze functie zorgt ervoor dat op de homepage ('cadeaus-alles') 
-# en alle andere pagina's de juiste JSON-bestanden worden gebruikt.
+# --- FUNCTIE: PRODUCTEN ZOEKEN EN FILTEREN (GEOPTIMALISEERD) ---
 def zoek_producten_op_categorie(categorie_trefwoord):
     
     trefwoord_delen = categorie_trefwoord.split('-') 
@@ -76,14 +68,21 @@ def zoek_producten_op_categorie(categorie_trefwoord):
     alle_producten_voor_hoofdcat = []
     
     # 1. SPECIAL CASE: 'Cadeaus-alles' of 'cadeaus-budget' moet ALLE producten laden
-    # De front-end logica is ingesteld dat 'cadeaus' ALLE producten toont.
     if hoofd_categorie == 'cadeaus':
-        # API oproep voor de 'cadeaus' hoofdcategorie moet ALLE JSONs combineren
-        # Dit is de enige plek waar we alle data bij elkaar rapen, behalve /alles.
+        # Combineer ALLE JSONs
         for cat_key in HOOFDCATEGORIEEN:
-             # Voorkom dubbel tellen als cadeaus.json al data bevat
-            alle_producten_voor_hoofdcat.extend(laad_product_data(cat_key))
-            
+             alle_producten_voor_hoofdcat.extend(laad_product_data(cat_key))
+             
+        # Verwijder duplicaten (nodig bij het combineren van alle JSONs)
+        seen_asins = set()
+        unieke_producten = []
+        for p in alle_producten_voor_hoofdcat:
+            # Gebruik ASIN als unieke identifier, als deze bestaat
+            if p.get('asin') and p.get('asin') not in seen_asins:
+                seen_asins.add(p.get('asin'))
+                unieke_producten.append(p)
+        alle_producten_voor_hoofdcat = unieke_producten
+             
     else:
         # Normale case: Laad alleen de JSON van de gevraagde hoofdcategorie
         alle_producten_voor_hoofdcat = laad_product_data(hoofd_categorie)
@@ -95,7 +94,6 @@ def zoek_producten_op_categorie(categorie_trefwoord):
         
         # CRUCIALE FIX: Converteer de prijs naar een numerieke waarde (prijs_num)
         try:
-            # Voer prijsconversie lokaal uit voor rendering (dit staat ook in JS, maar is handig voor Budget filter)
             prijs_tekst = product.get('prijs', '€0').replace('€', '').replace(',', '.').strip()
             product['prijs_num'] = float(prijs_tekst)
         except ValueError:
@@ -104,7 +102,6 @@ def zoek_producten_op_categorie(categorie_trefwoord):
         product_sub_cat = product.get('sub_categorie', 'onbekend')
         
         # 3. Hoofdfilter: Tonen als 'alles' is gekozen OF als subcategorie matcht.
-        # De JS filtert al op de budget-knop (als die actief is)
         if sub_categorie_filter == 'alles' or product_sub_cat == sub_categorie_filter or sub_categorie_filter == 'budget' or sub_categorie_filter == 'populair':
             
             # De affiliate link wordt direct uit de JSON gehaald
@@ -112,18 +109,7 @@ def zoek_producten_op_categorie(categorie_trefwoord):
             
             producten_voor_frontend.append(product)
             
-    # CRUCIALE FIX: Als 'cadeaus' wordt gevraagd, haal dan alle unieke producten op
-    if hoofd_categorie == 'cadeaus':
-        # Gebruik sets om duplicaten te verwijderen (op basis van ASIN)
-        seen_asins = set()
-        unieke_producten = []
-        for p in producten_voor_frontend:
-            if p.get('asin') not in seen_asins:
-                seen_asins.add(p.get('asin'))
-                unieke_producten.append(p)
-        return unieke_producten
-
-
+    # Retourneer de gefilterde producten
     return producten_voor_frontend
 
 
@@ -149,6 +135,7 @@ def laad_alle_producten():
     seen_asins = set()
     unieke_producten = []
     for p in alle_producten_lijst:
+        # Gebruik ASIN als unieke identifier, als deze bestaat
         if p.get('asin') and p.get('asin') not in seen_asins:
             seen_asins.add(p.get('asin'))
             unieke_producten.append(p)
@@ -165,8 +152,7 @@ def get_producten():
     return jsonify(product_lijst)
     
 # --- SERVER STARTEN ---
-# --- SERVER STARTEN ---
 #if __name__ == '__main__':
-#    local_host = '127.0.0.1' 
-#    print(f"Starte Flask Server op: http://{local_host}:{SERVER_PORT}/") 
-#    app.run(host=local_host, port=SERVER_PORT, debug=True)
+#    local_host = '127.0.0.1' 
+#    print(f"Starte Flask Server op: http://{local_host}:{SERVER_PORT}/") 
+#    app.run(host=local_host, port=SERVER_PORT, debug=True)

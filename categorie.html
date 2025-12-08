@@ -3,9 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Categorie Overzicht - Jouw Affiliate Shop</title>
+    
+    <title>Categorie Overzicht | Naar Leuk Cadeau | Inspiratie voor Elk Moment</title>
+    <meta name="description" content="Filter en vind het perfecte cadeau binnen onze specifieke categorieën zoals Entertainment, Huis & Techniek of Leefstijl. De beste deals, direct gelinkt naar onze partners.">
     <link rel="stylesheet" href="style.css"> 
-</head>
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
+    <link rel="manifest" href="/img/site.webmanifest">
+    <link rel="mask-icon" href="/img/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    </head>
 <body>
 
     <header>
@@ -89,11 +99,10 @@
         let loadedProducts = []; 
         
         // --- MAP: Definieer hier alle mogelijke subcategorieën en hun weergavenaam ---
-        // --- MAP: Definieer hier alle mogelijke subcategorieën en hun weergavenaam ---
         const FILTER_MAP = {
             'cadeaus': {
                 title: '🎁 Uitgelichte Cadeaus',
-                amazonSearch: 'cadeaus',
+                amazonSearch: 'cadeaus+inspiratie', 
                 filters: {
                     'populair': '🌟 Meest Populair',
                     'budget': '💰 Cadeaus onder €20',
@@ -104,14 +113,14 @@
                 amazonSearch: 'gadgets+spelletjes',
                 filters: {
                     'gadgets': '💡 Gadgets',
-                    'boek': '📖 Boeken', // <--- NIEUW: Sleutel 'beleving'
+                    'boek': '📖 Boeken', 
                     'speelgoed': '🧱 LEGO & Speelgoed', 
                     'spellen': '🎲 Bord- & Kaartspellen' 
                 }
             },
             'huistechniek': {
                 title: 'Huis & Techniek',
-                amazonSearch: 'smarthome+gereedschap',
+                amazonSearch: 'huishoudelijke+cadeaus', 
                 filters: {
                     'gereedschap': '🛠️ Klussen & Gereedschap',
                     'smarthome': '🏠 Smarthome & Wonen',
@@ -121,7 +130,7 @@
             },
             'leefstijl': {
                 title: 'Leefstijl & Wellness',
-                amazonSearch: 'fitness+beauty',
+                amazonSearch: 'persoonlijke+verzorging+cadeaus', 
                 filters: {
                     'sport': '🏃 Sport & Fitness',
                     'beauty': '💅 Beauty & Verzorging',
@@ -139,8 +148,7 @@
                 }
             }
         };
-// ... rest van je categorie.html
-        
+
         // --- FUNCTIE OM AMAZON CTA BIJ TE WERKEN ---
         function updateAmazonCTA(hoofdCatKey, subCatKey) {
             const container = document.getElementById('category-search-further');
@@ -150,9 +158,9 @@
             // Gebruik de subcategorie als zoekterm, anders de hoofdcategorie's algemene zoekterm
             let searchTerm = subCatKey === 'alles' 
                              ? hoofdCatData.amazonSearch 
-                             : hoofdCatData.filters[subCatKey] ? hoofdCatData.filters[subCatKey].split(' ')[1] : subCatKey; // Simpelste manier om de kern-zoekterm te pakken
+                             : hoofdCatData.filters[subCatKey] ? hoofdCatData.filters[subCatKey].split(' ')[1] : subCatKey; 
                              
-            searchTerm = encodeURIComponent(searchTerm.replace(/[^a-zA-Z0-9\s]/g, '').trim()); // Schoonmaken voor URL
+            searchTerm = encodeURIComponent(searchTerm.replace(/[^a-zA-Z0-9\s]/g, '').trim()); 
 
             link.href = `https://www.amazon.nl/s?k=${searchTerm}&tag=${MY_AFFILIATE_TAG}`;
             container.style.display = 'block';
@@ -184,7 +192,6 @@
 
             if (products.length === 0) {
                 productGrid.innerHTML = '<p>Geen producten gevonden met deze filters.</p>';
-                // LET OP: CTA wordt getoond in laadProducten
                 return;
             }
 
@@ -247,7 +254,6 @@
                     if (subCatKey === 'alles') {
                         displayTitle = FILTER_MAP[hoofdCatKey] ? FILTER_MAP[hoofdCatKey].title : 'Alle Producten';
                     } else {
-                        // LET OP: Hier gebruiken we de nieuwe key 'spellen'
                         displayTitle = FILTER_MAP[hoofdCatKey].filters[subCatKey] || subCatKey.charAt(0).toUpperCase() + subCatKey.slice(1);
                         
                         // Budget knop fix: Als er op Budget wordt geklikt, filter direct op <= 20
