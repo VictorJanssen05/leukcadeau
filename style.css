@@ -103,6 +103,8 @@ nav ul li a.active {
     font-weight: bold;
     text-transform: uppercase;
     transition: background-color 0.3s;
+    border: none; /* toegevoegd voor formulier knoppen */
+    cursor: pointer; /* toegevoegd voor formulier knoppen */
 }
 
 .cta-button:hover {
@@ -148,7 +150,7 @@ nav ul li a.active {
 
 .product-area {
     flex-grow: 1;
-    min-width: 0; /* Zorgt voor flexibiliteit */
+    min-width: 0; 
 }
 
 .product-area-full-width {
@@ -197,11 +199,18 @@ nav ul li a.active {
     margin: 0 auto;
 }
 
+/* FIX: TITEL FLEXIBILITEIT */
 .product-info h3 {
     font-size: 1.1em;
-    height: 2.2em; /* Zorgt voor consistente hoogte voor titels over 2 regels */
-    overflow: hidden;
     margin-bottom: 5px;
+    
+    /* Zorgt ervoor dat de titel na 3 regels afkapt met '...' */
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Maximaal 3 regels */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+    height: auto; 
 }
 
 .product-card .price {
@@ -211,26 +220,26 @@ nav ul li a.active {
     margin-bottom: 5px;
 }
 
-/* --- DE LEESBAARHEIDS FIX --- */
+/* --- DE LEESBAARHEIDS FIX (Product Beschrijving) --- */
 .product-card .short-desc {
     font-size: 0.9em;
     color: #666;
-    margin-bottom: 10px; /* Meer ruimte boven de knop */
+    margin-bottom: 10px;
 
-    /* Multiline ellipsis: WebKit clamp + fallback voor andere browsers */
+    /* Multiline ellipsis met fallback */
     line-height: 1.25em;
-    max-height: calc(1.25em * 3); /* zorgt dat niet-webkit browsers ook beperken tot ~3 regels */
+    max-height: calc(1.25em * 3); /* beperk tot ~3 regels als clamp niet beschikbaar is */
     overflow: hidden;
 
     display: -webkit-box;
-    -webkit-line-clamp: 3; /* Beperk tot 3 regels in WebKit-browsers */
-    line-clamp: 3; /* Standaard eigenschap als aanvulling */
     -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3; /* WebKit */
+    line-clamp: 3; /* future-proof */
     text-overflow: ellipsis;
 }
 
 .product-card .detail-link {
-    margin-top: auto; /* Zorgt ervoor dat de knop altijd onderaan staat */
+    margin-top: auto; 
     text-align: center;
     padding: 8px 15px;
     background-color: #457b9d;
@@ -257,7 +266,7 @@ nav ul li a.active {
     background-color: white;
     padding: 20px;
     border-radius: 8px;
-    align-self: flex-start; /* Zorgt ervoor dat de sidebar bovenaan blijft */
+    align-self: flex-start; 
 }
 
 .sidebar h2 {
@@ -362,41 +371,7 @@ footer a:hover {
     margin-top: 10px;
 }
 
-
-/* --- Media Queries (Responsiveness) --- */
-@media (max-width: 900px) {
-    .main-content-wrapper {
-        flex-direction: column;
-        padding: 0;
-    }
-
-    .sidebar {
-        width: 100%;
-        margin-bottom: 20px;
-        border-radius: 0;
-        padding: 20px;
-    }
-
-    .product-area {
-        padding: 0 20px;
-    }
-
-    nav ul {
-        flex-wrap: wrap;
-    }
-}
-
-@media (max-width: 600px) {
-    .logo a h1 {
-        font-size: 1.5em;
-    }
-
-    nav ul li a {
-        padding: 5px 10px;
-        font-size: 0.9em;
-    }
-}
-/* --- SEO Content Sectie (van vorige stap) --- */
+/* --- SEO Content Sectie (Homepage) --- */
 .seo-content-section {
     background-color: white;
     padding: 40px 0;
@@ -411,7 +386,7 @@ footer a:hover {
 }
 
 .seo-content-section h2 {
-    color: #e63946; /* Rood accent */
+    color: #e63946; 
     margin-bottom: 20px;
     text-align: center;
 }
@@ -423,7 +398,7 @@ footer a:hover {
 .seo-content-section h3 {
     margin-top: 25px;
     margin-bottom: 10px;
-    color: #457b9d; /* Midden Blauw */
+    color: #457b9d; 
     border-left: 4px solid #a8dadc;
     padding-left: 10px;
 }
@@ -453,10 +428,9 @@ footer a:hover {
 
 /* --- Contact Pagina Stijlen --- */
 
-/* Full-width container voor contactpagina */
 .main-content-wrapper.contact-page {
-    max-width: 800px; /* Maak de formulier container smaller */
-    display: block; /* Haalt de flex-lay-out weg */
+    max-width: 800px; 
+    display: block; 
 }
 
 .contact-form-container {
@@ -479,7 +453,6 @@ footer a:hover {
     color: #666;
 }
 
-/* Formulier Elementen */
 .contact-form .form-group {
     margin-bottom: 20px;
 }
@@ -506,25 +479,133 @@ footer a:hover {
 .contact-form input:focus,
 .contact-form select:focus,
 .contact-form textarea:focus {
-    border-color: #457b9d; /* Focus kleur */
+    border-color: #457b9d; 
     outline: none;
 }
 
 .contact-form textarea {
-    resize: vertical; /* Alleen verticaal schalen toestaan */
+    resize: vertical; 
 }
 
-/* Stijl voor de verzendknop (hergebruik cta-button stijl) */
 .form-submit-button {
-    width: 100%; /* Maak de knop even breed als het formulier */
+    width: 100%; 
     padding: 15px;
     font-size: 1.1em;
     margin-top: 10px;
 }
 
-/* Responsiviteit voor Formulier */
-@media (max-width: 600px) {
-    .contact-form-container {
-        padding: 20px;
+/* --- Media Queries (Responsiveness) --- */
+
+/* Tablet & Kleinere Schermen (tot 900px) */
+@media (max-width: 900px) {
+    .product-grid-container,
+    .product-area-full-width .product-grid-container {
+        grid-template-columns: repeat(2, 1fr); 
     }
+}
+
+/* Mobiel (vanaf 768px en kleiner) */
+@media (max-width: 768px) {
+    .main-content-wrapper {
+        flex-direction: column; 
+        padding: 0;
+        gap: 0; 
+    }
+    
+    .sidebar {
+        width: 100%;
+        margin-bottom: 20px;
+        order: -1; 
+        padding: 20px;
+        border-radius: 0; 
+    }
+
+    .product-area {
+        padding: 0 20px;
+    }
+    
+    .product-grid-container,
+    .product-area-full-width .product-grid-container {
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 10px; 
+    }
+
+    header {
+        flex-direction: column;
+    }
+    nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    nav ul li {
+        margin: 5px 10px;
+    }
+}
+
+/* Zeer kleine telefoons */
+@media (max-width: 480px) {
+    .product-grid-container,
+    .product-area-full-width .product-grid-container {
+        grid-template-columns: 1fr; /* Terug naar 1 kolom */
+    }
+}
+
+/* --- Blog Pagina Stijlen --- */
+
+/* Maakt de blog lay-out full-width */
+.main-content-wrapper.blog-page-layout {
+    display: block;
+    max-width: 1000px;
+}
+
+.blog-articles-list {
+    padding: 20px;
+}
+
+.blog-articles-list h1 {
+    text-align: center;
+    color: #e63946;
+    margin-bottom: 5px;
+}
+
+.blog-intro {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 1.1em;
+    color: #666;
+}
+
+.blog-post-summary {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.blog-post-summary h2 {
+    font-size: 1.8em;
+    color: #1d3557;
+    margin-bottom: 10px;
+}
+
+.article-meta {
+    font-size: 0.9em;
+    color: #a8dadc;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.read-more-button {
+    margin-top: 15px;
+    padding: 8px 20px;
+    font-size: 0.9em;
+    float: right;
+}
+
+.blog-post-summary p:after {
+    content: "";
+    display: block;
+    clear: both; 
 }
