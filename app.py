@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory # send_from_directory is NIEUW!
 from flask_cors import CORS
 import json 
 import os 
@@ -15,9 +15,28 @@ CORS(app)
 # Hoofdcategorieën die naar een eigen JSON-bestand verwijzen
 HOOFDCATEGORIEEN = ['cadeaus', 'entertainment', 'huistechniek', 'leefstijl', 'humor']
 
+# ===============================================
+# --- FIX: SERVEER HTML/CSS/JS BESTANDEN ---
+# Deze routes zorgen ervoor dat de browser de index.html en de andere files kan zien
+# ===============================================
+
+@app.route('/')
+def index():
+    # Serveert de hoofdpagina (index.html) wanneer iemand naar de root-URL (leukcadeau.com) gaat
+    return send_from_directory('.', 'index.html')
+
+@app.route('/<path:filename>')
+def serve_files(filename):
+    # Serveert alle andere bestanden zoals categorie.html, style.css, de JavaScript-bestanden, etc.
+    # Dit is nodig omdat je applicatie niet alleen een API is, maar ook HTML moet tonen.
+    return send_from_directory('.', filename)
+
+# ===============================================
+# --- EINDE FIX ---
+# ===============================================
+
 
 # --- FUNCTIE: DATA LADEN VANUIT JSON BESTAND ---
-
 def laad_product_data(hoofd_categorie):
     # Probeer zowel 'cadeaus' als 'cadeaus_alle' te laden als we op de cadeaus-pagina staan
     if hoofd_categorie == 'cadeaus':
@@ -48,7 +67,6 @@ def laad_product_data(hoofd_categorie):
 # --- FUNCTIE: PRODUCTEN ZOEKEN EN FILTEREN ---
 # De logica in deze functie zorgt ervoor dat op de homepage ('cadeaus-alles') 
 # en alle andere pagina's de juiste JSON-bestanden worden gebruikt.
-
 def zoek_producten_op_categorie(categorie_trefwoord):
     
     trefwoord_delen = categorie_trefwoord.split('-') 
@@ -84,11 +102,6 @@ def zoek_producten_op_categorie(categorie_trefwoord):
             product['prijs_num'] = 9999.0 
 
         product_sub_cat = product.get('sub_categorie', 'onbekend')
-
-        # 2. Filter Budget knop: Werkt op de numerieke prijs (max €20.00)
-        # We hoeven hier niet te filteren want dat doet de JS al!
-        # if sub_categorie_filter == 'budget' and product['prijs_num'] > 20.00:
-        #     continue 
         
         # 3. Hoofdfilter: Tonen als 'alles' is gekozen OF als subcategorie matcht.
         # De JS filtert al op de budget-knop (als die actief is)
@@ -129,7 +142,6 @@ def laad_alle_producten():
             except ValueError:
                 product['prijs_num'] = 9999.0
 
-            # De API hoeft niet te filteren, stuurt alles door
             product["affiliate_link"] = product.get('affiliate_link', 'https://www.amazon.nl/')
             alle_producten_lijst.append(product)
             
@@ -151,14 +163,10 @@ def get_producten():
     categorie = request.args.get('cat', 'algemeen') 
     product_lijst = zoek_producten_op_categorie(categorie)
     return jsonify(product_lijst)
-
-# --- SERVER STARTEN ---
-
-# app.py (Onderaan het bestand)
-# ...
+    
 # --- SERVER STARTEN ---
 # --- SERVER STARTEN ---
 #if __name__ == '__main__':
-#    local_host = '127.0.0.1' 
-#    print(f"Starte Flask Server op: http://{local_host}:{SERVER_PORT}/") 
-#    app.run(host=local_host, port=SERVER_PORT, debug=True)
+#    local_host = '127.0.0.1' 
+#    print(f"Starte Flask Server op: http://{local_host}:{SERVER_PORT}/") 
+#    app.run(host=local_host, port=SERVER_PORT, debug=True)
