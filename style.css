@@ -172,10 +172,11 @@ nav ul li a.active {
     border: 1px solid #ddd;
     border-radius: 8px;
     overflow: hidden;
-    padding: 15px;
+    padding: 15px 15px 10px 15px; /* FIX: Aangepaste padding voor knop ruimte */
     display: flex;
     flex-direction: column;
     transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
 }
 
 .product-card:hover {
@@ -199,14 +200,13 @@ nav ul li a.active {
     margin: 0 auto;
 }
 
-/* FIX: TITEL FLEXIBILITEIT */
+/* FIX: TITEL FLEXIBILITEIT (3 regels) */
 .product-info h3 {
     font-size: 1.1em;
     margin-bottom: 5px;
     
-    /* Zorgt ervoor dat de titel na 3 regels afkapt met '...' */
     display: -webkit-box;
-    -webkit-line-clamp: 3; /* Maximaal 3 regels */
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis; 
@@ -220,28 +220,25 @@ nav ul li a.active {
     margin-bottom: 5px;
 }
 
-/* --- DE LEESBAARHEIDS FIX (Product Beschrijving) --- */
+/* --- DE LEESBAARHEIDS FIX (Product Beschrijving 3 regels) --- */
 .product-card .short-desc {
-    font-size: 0.9em;
-    color: #666;
-    margin-bottom: 10px;
-
-    /* Multiline ellipsis met fallback */
-    line-height: 1.25em;
-    max-height: calc(1.25em * 3); /* beperk tot ~3 regels als clamp niet beschikbaar is */
-    overflow: hidden;
-
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3; /* WebKit */
-    line-clamp: 3; /* future-proof */
-    text-overflow: ellipsis;
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 15px; /* FIX: Meer ruimte onder de beschrijving */
+    
+    display: -webkit-box;
+    -webkit-line-clamp: 3; 
+    -webkit-box-orient: vertical;
+    overflow: hidden; 
+    text-overflow: ellipsis; 
 }
 
+/* FIX: Detail Link (Knop Styling) */
 .product-card .detail-link {
     margin-top: auto; 
     text-align: center;
-    padding: 8px 15px;
+    padding: 10px 15px; /* FIX: Iets hogere knop */
+    margin-bottom: 5px; /* FIX: Ruimte onder de knop */
     background-color: #457b9d;
     color: white;
     border-radius: 5px;
@@ -494,65 +491,8 @@ footer a:hover {
     margin-top: 10px;
 }
 
-/* --- Media Queries (Responsiveness) --- */
-
-/* Tablet & Kleinere Schermen (tot 900px) */
-@media (max-width: 900px) {
-    .product-grid-container,
-    .product-area-full-width .product-grid-container {
-        grid-template-columns: repeat(2, 1fr); 
-    }
-}
-
-/* Mobiel (vanaf 768px en kleiner) */
-@media (max-width: 768px) {
-    .main-content-wrapper {
-        flex-direction: column; 
-        padding: 0;
-        gap: 0; 
-    }
-    
-    .sidebar {
-        width: 100%;
-        margin-bottom: 20px;
-        order: -1; 
-        padding: 20px;
-        border-radius: 0; 
-    }
-
-    .product-area {
-        padding: 0 20px;
-    }
-    
-    .product-grid-container,
-    .product-area-full-width .product-grid-container {
-        grid-template-columns: repeat(2, 1fr); 
-        gap: 10px; 
-    }
-
-    header {
-        flex-direction: column;
-    }
-    nav ul {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    nav ul li {
-        margin: 5px 10px;
-    }
-}
-
-/* Zeer kleine telefoons */
-@media (max-width: 480px) {
-    .product-grid-container,
-    .product-area-full-width .product-grid-container {
-        grid-template-columns: 1fr; /* Terug naar 1 kolom */
-    }
-}
-
 /* --- Blog Pagina Stijlen --- */
 
-/* Maakt de blog lay-out full-width */
 .main-content-wrapper.blog-page-layout {
     display: block;
     max-width: 1000px;
@@ -609,6 +549,7 @@ footer a:hover {
     display: block;
     clear: both; 
 }
+
 /* --- Volledig Artikel Stijlen (Artikel-1.html) --- */
 
 .full-blog-post {
@@ -655,8 +596,63 @@ footer a:hover {
     margin-top: 30px;
 }
 
-/* Zorg dat de algemene cta-button stijl wordt hergebruikt voor de knop in het artikel */
 .full-blog-post .cta-button {
     margin: 20px 0;
     display: table;
+}
+
+/* --- Media Queries (Responsiveness) --- */
+
+/* Tablet & Kleinere Schermen (tot 900px) */
+@media (max-width: 900px) {
+    .product-grid-container,
+    .product-area-full-width .product-grid-container {
+        grid-template-columns: repeat(2, 1fr); 
+    }
+}
+
+/* Mobiel (vanaf 768px en kleiner) */
+@media (max-width: 768px) {
+    .main-content-wrapper {
+        flex-direction: column; 
+        padding: 0;
+        gap: 0; 
+    }
+    
+    .sidebar {
+        width: 100%;
+        margin-bottom: 20px;
+        order: -1; 
+        padding: 20px;
+        border-radius: 0; 
+    }
+
+    .product-area {
+        padding: 0 20px;
+    }
+    
+    .product-grid-container,
+    .product-area-full-width .product-grid-container {
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 10px; 
+    }
+
+    header {
+        flex-direction: column;
+    }
+    nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    nav ul li {
+        margin: 5px 10px;
+    }
+}
+
+/* Zeer kleine telefoons */
+@media (max-width: 480px) {
+    .product-grid-container,
+    .product-area-full-width .product-grid-container {
+        grid-template-columns: 1fr; /* Terug naar 1 kolom */
+    }
 }
