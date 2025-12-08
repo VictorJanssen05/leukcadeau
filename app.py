@@ -157,10 +157,8 @@ def get_producten():
 # app.py (Onderaan het bestand)
 # ...
 # --- SERVER STARTEN ---
+# --- SERVER STARTEN ---
 if __name__ == '__main__':
-    # Render gebruikt de PORT omgeving variabele, anders vallen we terug op 8000
-    port = int(os.environ.get("PORT", 8000))
-    local_host = '0.0.0.0' # 0.0.0.0 is vereist voor Render
-    print(f"Starte Flask Server op: http://{local_host}:{port}/")
-    app.run(host=local_host, port=port, debug=False) 
-    # De gunicorn start hierboven in de Procfile, dit is vooral voor lokaal testen
+    local_host = '127.0.0.1' 
+    print(f"Starte Flask Server op: http://{local_host}:{SERVER_PORT}/") 
+    app.run(host=local_host, port=SERVER_PORT, debug=True)
