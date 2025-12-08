@@ -11,7 +11,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Kopieer de rest van de applicatiecode (app.py, data-map, etc.)
 COPY . .
 
-# CRUCIALE FIX: Gebruik ENTRYPOINT en CMD in de array-syntax
-# Dit zorgt ervoor dat Gunicorn de $PORT omgevingsvariabele correct kan lezen
-ENTRYPOINT ["gunicorn"]
-CMD ["app:app", "--bind", "0.0.0.0:${PORT}"]
+# CMD ["app:app", "--bind", "0.0.0.0:${PORT}"] <-- Oude, foutieve regel
+
+# Nieuwe, gefixeerde regel:
+CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:8000"]
