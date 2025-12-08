@@ -158,7 +158,7 @@ def get_producten():
 # ...
 # --- SERVER STARTEN ---
 # --- SERVER STARTEN ---
-if __name__ == '__main__':
-    local_host = '127.0.0.1' 
-    print(f"Starte Flask Server op: http://{local_host}:{SERVER_PORT}/") 
-    app.run(host=local_host, port=SERVER_PORT, debug=True)
+#if __name__ == '__main__':
+#    local_host = '127.0.0.1' 
+#    print(f"Starte Flask Server op: http://{local_host}:{SERVER_PORT}/") 
+#    app.run(host=local_host, port=SERVER_PORT, debug=True)
