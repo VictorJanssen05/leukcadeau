@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Contact | Naar Leuk Cadeau | Stel Je Vraag</title>
+    <meta name="description" content="Heb je vragen over een product, een bestelling of suggesties voor een nieuw cadeau? Neem contact op met het team van Naar Leuk Cadeau. We helpen je graag verder!">
+    <link rel="stylesheet" href="style.css"> 
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/img/favicon-96x96.png"> 
+    <link rel="icon" type="image/png" sizes="192x192" href="/img/web-app-manifest-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/img/web-app-manifest-512x512.png">
+    <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+    <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+    
+    <link rel="manifest" href="/img/site.webmanifest">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#1d3557">
+    </head>
+<body>
+
+    <header>
+        <div class="logo">
+            <a href="index.html"><h1>Naar Leuk Cadeau 🎁</h1></a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="categorie.html">Cadeau Categorieën</a></li>
+                <li><a href="blog.html">Blog</a></li> 
+                <li><a href="contact.html" class="active">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="hero-section hero-small">
+        <h2>Neem Contact Op</h2>
+        <p>Wij horen graag van je! Stuur ons een bericht en we reageren zo snel mogelijk.</p>
+    </div>
+
+    <div class="breadcrumb-container">
+        <div class="breadcrumb-inner">
+            <a href="index.html">Home</a> <span>/</span> <span class="current-page">Contact</span>
+        </div>
+    </div>
+    
+    <div class="main-content-wrapper contact-page">
+        <div class="contact-form-container">
+            <h2>Stuur Ons Een Bericht</h2>
+            <p class="contact-intro">Heb je een vraag over een product, een suggestie voor de website of wil je samenwerken? Gebruik het onderstaande formulier.</p>
+
+            <form action="#" method="POST" class="contact-form">
+                
+                <div class="form-group">
+                    <label for="name">Naam:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">E-mailadres:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="subject">Onderwerp:</label>
+                    <select id="subject" name="subject" required>
+                        <option value="" disabled selected>Kies een onderwerp</option>
+                        <option value="product_vraag">Vraag over een product</option>
+                        <option value="suggestie">Suggestie voor website/categorie</option>
+                        <option value="samenwerking">Samenwerking/Affiliate</option>
+                        <option value="overige">Overig</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Je Bericht:</label>
+                    <textarea id="message" name="message" rows="6" required></textarea>
+                </div>
+
+                <button type="submit" class="cta-button form-submit-button">Bericht Verzenden</button>
+            </form>
+
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Naar Leuk Cadeau</p>
+        <div class="footer-links">
+            <a href="index.html">Home</a> | 
+            <a href="categorie.html">Cadeau Categorieën</a> | 
+            <a href="contact.html">Contact</a>
+        </div>
+    </footer>
+    
+</body>
+</html>
