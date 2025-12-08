@@ -609,3 +609,54 @@ footer a:hover {
     display: block;
     clear: both; 
 }
+/* --- Volledig Artikel Stijlen (Artikel-1.html) --- */
+
+.full-blog-post {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.intro-paragraph {
+    font-size: 1.15em;
+    line-height: 1.8;
+    color: #1d3557;
+    border-bottom: 2px dashed #f4f4f4;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+    font-weight: 500;
+}
+
+.full-blog-post h2 {
+    color: #e63946; /* Rood Accent */
+    margin-top: 30px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+}
+
+.full-blog-post h3 {
+    color: #457b9d; /* Midden Blauw */
+    margin-top: 20px;
+}
+
+.full-blog-post ul {
+    list-style: disc;
+    padding-left: 30px;
+    margin-bottom: 25px;
+}
+
+.conclusion-summary {
+    font-weight: bold;
+    font-style: italic;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-left: 4px solid #a8dadc;
+    margin-top: 30px;
+}
+
+/* Zorg dat de algemene cta-button stijl wordt hergebruikt voor de knop in het artikel */
+.full-blog-post .cta-button {
+    margin: 20px 0;
+    display: table;
+}
